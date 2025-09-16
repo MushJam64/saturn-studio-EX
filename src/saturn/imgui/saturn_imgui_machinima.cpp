@@ -1045,28 +1045,36 @@ void imgui_machinima_animation_player(MarioActor* actor, bool sampling) {
             if (ImGui::BeginTable("Bone Editor", 2)) {
                 ImGui::TableNextRow();
                 if (actor->obj_model == MODEL_MARIO) {
-#define KF_BONE_ID "k_mariobone_" + (currbone == 1 ? "t" : std::to_string(currbone - 1))
-                    BONE_ENTRY("Translation"    );
-                    BONE_ENTRY("Root"           );
-                    BONE_ENTRY("Body"           );
-                    BONE_ENTRY("Torso"          );
-                    BONE_ENTRY("Head"           );
-                    BONE_ENTRY("Left Arm"       );
-                    BONE_ENTRY("Upper Left Arm" );
-                    BONE_ENTRY("Lower Left Arm" );
-                    BONE_ENTRY("Left Hand"      );
-                    BONE_ENTRY("Right Arm"      );
-                    BONE_ENTRY("Upper Right Arm");
-                    BONE_ENTRY("Lower Right Arm");
-                    BONE_ENTRY("Right Hand"     );
-                    BONE_ENTRY("Left Leg"       );
-                    BONE_ENTRY("Upper Left Leg" );
-                    BONE_ENTRY("Lower Left Leg" );
-                    BONE_ENTRY("Left Foot"      );
-                    BONE_ENTRY("Right Leg"      );
-                    BONE_ENTRY("Upper Right Leg");
-                    BONE_ENTRY("Lower Right Leg");
-                    BONE_ENTRY("Right Foot"     );
+#define KF_BONE_ID \
+    (currbone >= 22 ? "k_mariobone_mcomp" + std::to_string(currbone - 21) \
+    : (currbone == 1 ? "k_mariobone_t" : "k_mariobone_" + std::to_string(currbone - 1)))
+
+                        BONE_ENTRY("Translation"    );
+                        BONE_ENTRY("Root"           );
+                        BONE_ENTRY("Body"           );
+                        BONE_ENTRY("Torso"          );
+                        BONE_ENTRY("Head"           );
+                        BONE_ENTRY("Left Arm"       );
+                        BONE_ENTRY("Upper Left Arm" );
+                        BONE_ENTRY("Lower Left Arm" );
+                        BONE_ENTRY("Left Hand"      );
+                        BONE_ENTRY("Right Arm"      );
+                        BONE_ENTRY("Upper Right Arm");
+                        BONE_ENTRY("Lower Right Arm");
+                        BONE_ENTRY("Right Hand"     );
+                        BONE_ENTRY("Left Leg"       );
+                        BONE_ENTRY("Upper Left Leg" );
+                        BONE_ENTRY("Lower Left Leg" );
+                        BONE_ENTRY("Left Foot"      );
+                        BONE_ENTRY("Right Leg"      );
+                        BONE_ENTRY("Upper Right Leg");
+                        BONE_ENTRY("Lower Right Leg");
+                        BONE_ENTRY("Right Foot"     );
+                        BONE_ENTRY("MCOMP Bone 1"   );
+                        BONE_ENTRY("MCOMP Bone 2"   );
+                        BONE_ENTRY("MCOMP Bone 3"   );
+                        BONE_ENTRY("MCOMP Bone 4"   );
+
 #undef KF_BONE_ID
                 }
                 else {

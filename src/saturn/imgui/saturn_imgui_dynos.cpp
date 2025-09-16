@@ -91,8 +91,8 @@ void open_file(std::string path) {
 }
 
 void saturn_show_crash_dialog() {
-    if (pfd::message("Saturn Studio",
-        "Saturn Studio has crashed.\n"
+    if (pfd::message("Saturn Studio M",
+        "Saturn Studio M has crashed.\n"
         "\n"
         "Join the Saturn Discord server\n"
         "https://discord.gg/rGqREG2kYv\n"

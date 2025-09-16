@@ -1342,7 +1342,7 @@ bool saturn_splash_screen_update(SDL_Renderer* renderer) {
 int saturn_splash_screen_open() {
     // make the x11 compositor on linux not kill itself
     SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
-    SDL_Window* window = SDL_CreateWindow("Saturn Studio", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 360, 0);
+    SDL_Window* window = SDL_CreateWindow("Saturn Studio M", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 360, 0);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetWindowBordered(window, SDL_FALSE);

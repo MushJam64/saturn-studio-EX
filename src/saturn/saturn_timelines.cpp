@@ -119,6 +119,10 @@ void saturn_fill_data_table() {
     SATURN_KFENTRY_FLOAT("k_mariobone_18", BONE_ENTRY(18), 3, "Upper Right Leg", true);
     SATURN_KFENTRY_FLOAT("k_mariobone_19", BONE_ENTRY(19), 3, "Lower Right Leg", true);
     SATURN_KFENTRY_FLOAT("k_mariobone_20", BONE_ENTRY(20), 3, "Right Foot", true);
+    SATURN_KFENTRY_FLOAT("k_mariobone_mcomp_1", BONE_ENTRY(21), 3, "MCOMP BONE 1", true);
+    SATURN_KFENTRY_FLOAT("k_mariobone_mcomp_2", BONE_ENTRY(22), 3, "MCOMP BONE 2", true);
+    SATURN_KFENTRY_FLOAT("k_mariobone_mcomp_3", BONE_ENTRY(23), 3, "MCOMP BONE 3", true);
+    SATURN_KFENTRY_FLOAT("k_mariobone_mcomp_4", BONE_ENTRY(24), 3, "MCOMP BONE 4", true);
     SATURN_KFENTRY_FLOAT("k_objbone_t", BONE_ENTRY(0), 3, "Translation", true);
     SATURN_KFENTRY_FLOAT("k_objbone_0", BONE_ENTRY(1), 3, "Root", true);
     OBJ_BONE(1);
