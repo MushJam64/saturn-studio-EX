@@ -15,6 +15,7 @@ extern "C" {
 #include "include/model_ids.h"
 #include "include/object_fields.h"
 #include "include/behavior_data.h"
+#include "geo_commands.h"
 }
 
 struct InputRecordingFrame {
@@ -24,6 +25,12 @@ struct InputRecordingFrame {
     int animFrame;
     Vec3s torsoAngle;
 };
+
+enum BoneType {
+    GEO_ANIMATED_PART,
+    GEO_MCOMP_EXTRA
+};
+
 
 class MarioActor {
 public:
@@ -58,6 +65,7 @@ public:
     Vec3f scaler[3];
     int num_bones = 21;
     Vec3f bones[60];
+    Vec3f mcompbones[60]; //new bones
     Model model = Model();
     ModelID obj_model;
     ColorCode colorcode;
@@ -72,6 +80,7 @@ public:
     struct Object* marioObj = nullptr;
     bool exists = true;
     char name[256];
+    BoneType boneTypes[60]; // Lets us find out what bone we're using
     MarioActor();
 };
 

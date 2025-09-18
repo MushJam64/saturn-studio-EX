@@ -49,6 +49,7 @@ extern "C" {
 #include "game/object_helpers.h"
 #include "game/object_list_processor.h"
 #include "engine/surface_load.h"
+#include "geo_commands.h"
 }
 
 #include "saturn/saturn_json.h"
@@ -80,6 +81,30 @@ struct GraphNode* override_level_geolayout;
 Collision* override_level_collision;
 
 Array<PackData *> &sDynosPacks = DynOS_Gfx_GetPacks();
+
+static const char* marioBoneNames[] = {
+    "Translation",
+    "Root",
+    "Body",
+    "Torso",
+    "Head",
+    "Left Arm",
+    "Upper Left Arm",
+    "Lower Left Arm",
+    "Left Hand",
+    "Right Arm",
+    "Upper Right Arm",
+    "Lower Right Arm",
+    "Right Hand",
+    "Left Leg",
+    "Upper Left Leg",
+    "Lower Left Leg",
+    "Left Foot",
+    "Right Leg",
+    "Upper Right Leg",
+    "Lower Right Leg",
+    "Right Foot"
+};
 
 s16 levelList[] = { 
     LEVEL_SA, LEVEL_CASTLE_GROUNDS, LEVEL_CASTLE, LEVEL_CASTLE_COURTYARD, LEVEL_BOB, 
@@ -825,6 +850,7 @@ std::vector<s16> sampling_indices = {};
 void imgui_machinima_animation_player(MarioActor* actor, bool sampling) {
     if (!sampling) actor->custom_bone = false;
     bool should_update_sample = false;
+    static bool showMCompBones = false;
     if (ImGui::BeginTabBar("###anim_tab_bar")) {
         if (ImGui::BeginTabItem("SM64")) {
             ImGui::PushItemWidth(316);
@@ -947,6 +973,7 @@ void imgui_machinima_animation_player(MarioActor* actor, bool sampling) {
         if (!sampling) if (ImGui::BeginTabItem("Custom")) {
             actor->custom_bone = true;
             int currbone = 0;
+            int mCompcurrbone = 0;
             if (ImGui::TreeNode("Export")) {
                 ImGui::InputText("Name", animname, 256);
                 ImGui::InputText("Author", animauthor, 256);
@@ -1032,48 +1059,51 @@ void imgui_machinima_animation_player(MarioActor* actor, bool sampling) {
             }
             ImGui::SameLine();
             if (ImGui::Button("Next Frame")) k_current_frame++;
+            ImGui::Checkbox("Show MCOMP Bones", &showMCompBones);
 
-#define BONE_ENTRY(name) {                                      \
-                ImGui::TableSetColumnIndex(0);                   \
-                ImGui::PushItemWidth(200);                        \
-                ImGui::DragFloat3(name, actor->bones[currbone++]); \
-                ImGui::PopItemWidth();                              \
-                ImGui::TableSetColumnIndex(1);                       \
-                saturn_keyframe_popout(KF_BONE_ID);                   \
-                ImGui::TableNextRow();                                 \
+// Reusable macros
+#define BONE_ENTRY(name) {                                 \
+    ImGui::TableNextRow();                                  \
+    ImGui::TableSetColumnIndex(0);                          \
+    ImGui::PushItemWidth(200);                              \
+    ImGui::DragFloat3(name, actor->bones[currbone++]);     \
+    ImGui::PopItemWidth();                                  \
+    ImGui::TableSetColumnIndex(1);                          \
+    saturn_keyframe_popout(KF_BONE_ID);                     \
+}
+
+#define MCOMP_BONE_ENTRY(name, index) {                     \
+    ImGui::TableNextRow();                                  \
+    ImGui::TableSetColumnIndex(0);                          \
+    ImGui::PushItemWidth(200);                              \
+    ImGui::DragFloat3(name, actor->mcompbones[index]);           \
+    ImGui::PopItemWidth();                                  \
+    ImGui::TableSetColumnIndex(1);                          \
+    saturn_keyframe_popout(KF_BONE_ID);                     \
+}
+
+    // --- Main Bone Table ---
+    if (ImGui::BeginTable("Bone Editor", 2)) {
+        
+    #define KF_BONE_ID "k_mariobone_" + (currbone == 1 ? "t" : std::to_string(currbone - 1))
+        // First pass: render all main bones
+        if (actor->obj_model == MODEL_MARIO) {
+
+        for (int i = 0; i < actor->num_bones; i++) {
+        const char* boneName = (i < (int)(sizeof(marioBoneNames)/sizeof(marioBoneNames[0])))
+                           ? marioBoneNames[i]
+                           : "Unknown Bone";
+
+        if (actor->boneTypes[i] == GEO_MCOMP_EXTRA) {
+            if (showMCompBones) {
+                std::string mcompName = "MCOMP Bone " + std::to_string(i); // use actual index
+                MCOMP_BONE_ENTRY(mcompName.c_str(), i);
             }
-            if (ImGui::BeginTable("Bone Editor", 2)) {
-                ImGui::TableNextRow();
-                if (actor->obj_model == MODEL_MARIO) {
-#define KF_BONE_ID \
-    (currbone >= 22 ? "k_mariobone_mcomp" + std::to_string(currbone - 21) \
-    : (currbone == 1 ? "k_mariobone_t" : "k_mariobone_" + std::to_string(currbone - 1)))
+        } else {
+            BONE_ENTRY(boneName); // normal bone
+        }
+    }
 
-                        BONE_ENTRY("Translation"    );
-                        BONE_ENTRY("Root"           );
-                        BONE_ENTRY("Body"           );
-                        BONE_ENTRY("Torso"          );
-                        BONE_ENTRY("Head"           );
-                        BONE_ENTRY("Left Arm"       );
-                        BONE_ENTRY("Upper Left Arm" );
-                        BONE_ENTRY("Lower Left Arm" );
-                        BONE_ENTRY("Left Hand"      );
-                        BONE_ENTRY("Right Arm"      );
-                        BONE_ENTRY("Upper Right Arm");
-                        BONE_ENTRY("Lower Right Arm");
-                        BONE_ENTRY("Right Hand"     );
-                        BONE_ENTRY("Left Leg"       );
-                        BONE_ENTRY("Upper Left Leg" );
-                        BONE_ENTRY("Lower Left Leg" );
-                        BONE_ENTRY("Left Foot"      );
-                        BONE_ENTRY("Right Leg"      );
-                        BONE_ENTRY("Upper Right Leg");
-                        BONE_ENTRY("Lower Right Leg");
-                        BONE_ENTRY("Right Foot"     );
-                        BONE_ENTRY("MCOMP Bone 1"   );
-                        BONE_ENTRY("MCOMP Bone 2"   );
-                        BONE_ENTRY("MCOMP Bone 3"   );
-                        BONE_ENTRY("MCOMP Bone 4"   );
 
 #undef KF_BONE_ID
                 }
